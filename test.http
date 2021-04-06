@@ -1,0 +1,7 @@
+POST https://localhost:44332/
+Content-Type: application/json
+
+{
+    "MyProperty": 1,
+    "MyProperty2": 5
+}
