@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication1", "WebAppli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fun.AspNetCore", "Fun.AspNetCore\Fun.AspNetCore.csproj", "{11E76B1D-34A3-41DC-98CD-F9A044EA74D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{2B743D28-E0C9-465E-B0C7-6B9553711133}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{2B743D28-E0C9-465E-B0C7-6B9553711133}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventGenerator", "EventGenerator\EventGenerator.csproj", "{99556D5D-2108-48BF-8B3C-BA18A4D24100}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{2B743D28-E0C9-465E-B0C7-6B9553711133}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B743D28-E0C9-465E-B0C7-6B9553711133}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B743D28-E0C9-465E-B0C7-6B9553711133}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99556D5D-2108-48BF-8B3C-BA18A4D24100}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99556D5D-2108-48BF-8B3C-BA18A4D24100}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99556D5D-2108-48BF-8B3C-BA18A4D24100}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99556D5D-2108-48BF-8B3C-BA18A4D24100}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

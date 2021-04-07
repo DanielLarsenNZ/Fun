@@ -11,7 +11,6 @@ namespace ConsoleApp1
     public class EventHubCosmosFun : IFun<MyEvent, MyDocument>
     {
         private readonly Container _container;
-        private bool _unbinding = false;
         private readonly FunContext _context;
 
         public EventHubCosmosFun(EventProcessorClient processor, Container container, FunContext context)
@@ -23,7 +22,16 @@ namespace ConsoleApp1
 
         public Task<MyDocument> Run(FunContext context, MyEvent input)
         {
-            return Task.FromResult(new MyDocument { MyProperty = input.MyProperty });
+            try
+            {
+                Console.WriteLine("Run");
+                return Task.FromResult(new MyDocument { Id = Guid.NewGuid().ToString("N"), MyProperty = input.MyProperty });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         public async Task Bind()
@@ -31,6 +39,8 @@ namespace ConsoleApp1
             // Register handlers for processing events and handling errors
             EventProcessorClient.ProcessEventAsync += async (args) =>
             {
+                Console.WriteLine("ProcessEventAsync");
+
                 if (args.CancellationToken.IsCancellationRequested) return;
 
                 try
@@ -54,20 +64,25 @@ namespace ConsoleApp1
                 catch (Exception ex)
                 {
                     // TODO: retry, etc
+                    Console.WriteLine(ex.Message);
                     _context.PostHealth(FunHealth.Failure(ex));
                 }
             };
 
-            EventProcessorClient.ProcessErrorAsync += async (args) =>
+            EventProcessorClient.ProcessErrorAsync += (args) =>
             {
+                Console.WriteLine($"ProcessErrorAsync: {args.Exception.Message}");
+
                 //_context.Logger.LogError(eventArgs.Exception);
                 // Circuit breaker
                 //if (attempts > 3) Health.Error(ex);
                 //else Health.Warning(ex);
                 _context.PostHealth(FunHealth.Failure(args.Exception));
+
+                return Task.CompletedTask;
             };
 
-            // Start the processing
+            // Start the processor
             await EventProcessorClient.StartProcessingAsync();
 
             return;
@@ -77,7 +92,8 @@ namespace ConsoleApp1
 
         public async Task UnBind()
         {
-            _unbinding = true;
+            Console.WriteLine("UnBind");
+
             await EventProcessorClient.StopProcessingAsync();
         }
     }
