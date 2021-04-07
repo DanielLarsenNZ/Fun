@@ -3,7 +3,7 @@ using Scale.Fun;
 using System;
 using System.Threading.Tasks;
 
-namespace WebApplication1.Scale.Fun
+namespace Fun.AspNetCore
 {
     public abstract class HttpFun<TInput, TOutput> : IHttpFun, IFun<TInput, TOutput>
     {

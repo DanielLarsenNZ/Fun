@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Fun.AspNetCore;
+using Microsoft.Extensions.DependencyInjection;
 using Scale.Fun;
 using System;
-using WebApplication1.Scale.Fun;
 
 namespace Microsoft.AspNetCore.Builder
-{
+{ 
     public static class HttpFunApplicationBuilderExtensions
     {
         /// <summary>

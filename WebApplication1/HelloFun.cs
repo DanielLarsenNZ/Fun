@@ -1,6 +1,6 @@
-﻿using Scale.Fun;
+﻿using Fun.AspNetCore;
+using Scale.Fun;
 using System.Threading.Tasks;
-using WebApplication1.Scale.Fun;
 
 namespace WebApplication1
 {

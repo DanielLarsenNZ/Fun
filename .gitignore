@@ -1,6 +1,6 @@
 bin
 obj
 .vs
-.suo
-.user
+*.suo
+*.user
 appsettings.*.json

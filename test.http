@@ -3,5 +3,5 @@ Content-Type: application/json
 
 {
     "MyProperty": 1,
-    "MyProperty2": 5
+    "MyProperty2": 500
 }
