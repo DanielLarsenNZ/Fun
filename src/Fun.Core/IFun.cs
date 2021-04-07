@@ -10,9 +10,7 @@ namespace Fun
         //Task Bind(Func<FunContext, TInput, Task<TOutput>> fun);
     }
 
-    public interface IFun 
+    public interface IFun
     {
-        Task Bind();
-        Task UnBind();
     }
 }

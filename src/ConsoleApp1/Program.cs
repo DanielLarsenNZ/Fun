@@ -48,7 +48,7 @@ namespace ConsoleApp1
             var controller = new FunController();
             var context = new FunContext(controller);
 
-            var fun = new EventHubCosmosFun(processor, cosmosContainer, context);
+            var fun = new SaveEventFun(processor, cosmosContainer, context);
             await fun.Bind();
 
             Console.WriteLine("Ready. Press any key to stop.");

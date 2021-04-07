@@ -1,35 +1,21 @@
 ﻿using Azure.Messaging.EventHubs;
-using Fun;
 using Microsoft.Azure.Cosmos;
 using System;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1
+//TODO: Move to Fun.Azure
+namespace Fun.Azure
 {
-    public class EventHubCosmosFun : Fun<MyEvent, MyDocument>
+    public abstract class EventHubCosmosFunBinding<TInput, TOutput> : FunBinding, IFun<TInput, TOutput>
     {
         private readonly Container _container;
 
-        public EventHubCosmosFun(EventProcessorClient processor, Container container, FunContext context) : base(context)
+        public EventHubCosmosFunBinding(EventProcessorClient processor, Container container, FunContext context) : base(context)
         {
             EventProcessorClient = processor;
             _container = container;
-        }
-
-        public override Task<MyDocument> Run(FunContext context, MyEvent input)
-        {
-            try
-            {
-                Console.WriteLine("Run");
-                return Task.FromResult(new MyDocument { Id = Guid.NewGuid().ToString("N"), MyProperty = input.MyProperty });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
         }
 
         public override async Task Bind()
@@ -46,7 +32,7 @@ namespace ConsoleApp1
                     await _container.CreateItemAsync(
                         await Run(
                             _context,
-                            JsonSerializer.Deserialize<MyEvent>(Encoding.UTF8.GetString(args.Data.Body.ToArray()))));
+                            JsonSerializer.Deserialize<TInput>(Encoding.UTF8.GetString(args.Data.Body.ToArray()))));
 
                     await args.UpdateCheckpointAsync(args.CancellationToken);
 
@@ -94,5 +80,7 @@ namespace ConsoleApp1
 
             await EventProcessorClient.StopProcessingAsync();
         }
+
+        public abstract Task<TOutput> Run(FunContext context, TInput input);
     }
 }

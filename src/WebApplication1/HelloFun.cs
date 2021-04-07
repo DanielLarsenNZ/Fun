@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace WebApplication1
 {
-    public class HelloFun : HttpFun<MyModel, MyModel>
+    public class HelloFun : HttpFunBinding<MyModel, MyModel>
     {
         public HelloFun(FunContext context) : base(context) { }
 
