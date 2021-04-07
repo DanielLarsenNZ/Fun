@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Scale.Fun
+namespace Fun
 {
     public class NullTelemetry : ITelemetry
     {

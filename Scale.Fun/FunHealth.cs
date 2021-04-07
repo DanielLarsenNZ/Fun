@@ -1,4 +1,4 @@
-﻿namespace Scale.Fun
+﻿namespace Fun
 {
     public class FunHealth
     {

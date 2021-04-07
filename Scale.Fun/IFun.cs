@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Scale.Fun
+namespace Fun
 {
     public interface IFun<TInput, TOutput> : IFun
     {

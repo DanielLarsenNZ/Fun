@@ -9,7 +9,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Scale.Fun\Scale.Fun.csproj" />
+    <ProjectReference Include="..\Scale.Fun\Fun.Core.csproj" />
   </ItemGroup>
 
 </Project>

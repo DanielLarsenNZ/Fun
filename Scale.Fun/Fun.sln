@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31129.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scale.Fun", "Scale.Fun.csproj", "{430A952C-03C4-469F-A257-A7FD7005B443}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fun.Core", "Fun.Core.csproj", "{430A952C-03C4-469F-A257-A7FD7005B443}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyFun", "..\MyFun\MyFun.csproj", "{4E2A006D-F91F-4A30-A311-0A93B95857E4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication1", "..\WebApplication1\WebApplication1.csproj", "{DB7DB139-2EDC-4E3E-A60E-D42EDA8FFD00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fun.AspNetCore", "..\Fun.AspNetCore\Fun.AspNetCore.csproj", "{11E76B1D-34A3-41DC-98CD-F9A044EA74D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fun.AspNetCore", "..\Fun.AspNetCore\Fun.AspNetCore.csproj", "{11E76B1D-34A3-41DC-98CD-F9A044EA74D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

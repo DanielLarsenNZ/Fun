@@ -20,7 +20,7 @@ namespace WebApplication1
             }
 
             app.UseRouting();
-            app.UseFun<HelloFun>("/");
+            app.UseFunPost<HelloFun>("/");
         }
     }
 }

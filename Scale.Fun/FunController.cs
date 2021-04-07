@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Scale.Fun
+namespace Fun
 {
     public class FunController
     {

@@ -1,5 +1,5 @@
-﻿using Fun.AspNetCore;
-using Scale.Fun;
+﻿using Fun;
+using Fun.AspNetCore;
 using System.Threading.Tasks;
 
 namespace WebApplication1

@@ -1,4 +1,4 @@
-﻿using Scale.Fun;
+﻿using Fun;
 using System;
 using System.Linq;
 
