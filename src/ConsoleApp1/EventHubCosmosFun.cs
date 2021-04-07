@@ -8,19 +8,17 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
-    public class EventHubCosmosFun : IFun<MyEvent, MyDocument>
+    public class EventHubCosmosFun : Fun<MyEvent, MyDocument>
     {
         private readonly Container _container;
-        private readonly FunContext _context;
 
-        public EventHubCosmosFun(EventProcessorClient processor, Container container, FunContext context)
+        public EventHubCosmosFun(EventProcessorClient processor, Container container, FunContext context) : base(context)
         {
             EventProcessorClient = processor;
             _container = container;
-            _context = context;
         }
 
-        public Task<MyDocument> Run(FunContext context, MyEvent input)
+        public override Task<MyDocument> Run(FunContext context, MyEvent input)
         {
             try
             {
@@ -34,7 +32,7 @@ namespace ConsoleApp1
             }
         }
 
-        public async Task Bind()
+        public override async Task Bind()
         {
             // Register handlers for processing events and handling errors
             EventProcessorClient.ProcessEventAsync += async (args) =>
@@ -90,7 +88,7 @@ namespace ConsoleApp1
 
         public EventProcessorClient EventProcessorClient { get; private set; }
 
-        public async Task UnBind()
+        public override async Task UnBind()
         {
             Console.WriteLine("UnBind");
 

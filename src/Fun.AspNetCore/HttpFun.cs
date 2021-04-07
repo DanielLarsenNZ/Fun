@@ -4,15 +4,11 @@ using System.Threading.Tasks;
 
 namespace Fun.AspNetCore
 {
-    public abstract class HttpFun<TInput, TOutput> : IHttpFun, IFun<TInput, TOutput>
+    public abstract class HttpFun<TInput, TOutput> : Fun<TInput, TOutput>, IHttpFun //, IFun<TInput, TOutput>
     {
-        protected readonly FunContext _context;
+        public HttpFun(FunContext context) : base(context) { }
 
-        public HttpFun(FunContext context) => _context = context;
-
-        public abstract Task<TOutput> Run(FunContext context, TInput input);
-
-        public Task Bind() => Task.FromResult(
+        public override Task Bind() => Task.FromResult(
             RequestDelegate = new RequestDelegate(
                 async (context) =>
                 {

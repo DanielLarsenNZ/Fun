@@ -13,5 +13,6 @@ namespace Fun
     public interface IFun 
     {
         Task Bind();
+        Task UnBind();
     }
 }
