@@ -4,7 +4,44 @@ Like Lambda and Functions, but Fun<sup>*</sup>.
 
 ## Getting started
 
-Implement functional microservices as `IFun`
+Implement a micro-service in a functional style as `IFun`
+
+```csharp
+public class TabulateEvents : IFun
+{
+    public Task<MyDocument> Run (FunContext context, MyEvent input)
+    {
+        context.Logger.LogInformation(input.Description);
+
+        if (input.Type == "Add") return new MyDocument{ Sum = input.Value1 + input Value2 };
+        else return new MyDocument{ Sum = input.Value1 - input Value2 };
+    } 
+}
+```
+
+Implement a binding by inheriting from `FunBinding`
+
+```csharp
+public class MyBinding : FunBinding
+{
+    public override async Task Bind() 
+    {
+        //...
+    }
+}
+```
+
+Map Functions to Bindings
+
+```csharp
+app.UseFun<TabulateEvents, MyBinding>();
+```
+
+Build as a console exe and run anywhere that .NET Core is supported.
+
+## Fun
+
+> `IFun` promotes SOLID principles and Functional programming techniques; single input and output types (can be complex types) give better closure and promote single responsibility principle. Fun services are designed to contain only a few lines of business logic code. 
 
 ```csharp
 public interface IFun
@@ -24,8 +61,6 @@ public class TabulateEvents : IFun
     } 
 }
 ```
-
-`IFun` promotes SOLID principles and Functional programming techniques; single input and output types (can be complex types) give better closure and promote single responsibility principle. Fun services are designed to contain only a few lines of business logic code. 
 
 ## Bindings
 
@@ -73,7 +108,7 @@ public class MyBinding : FunBinding
 Build your own Scale controller by inheriting from `FunController`
 
 ```csharp
-public class KubernetesFunController : FunController
+public class FunDaprController : FunController
 {
     public override async Task ScaleUp() 
     {
