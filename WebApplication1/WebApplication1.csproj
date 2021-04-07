@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fun.AspNetCore\Fun.AspNetCore.csproj" />
-    <ProjectReference Include="..\Scale.Fun\Fun.Core.csproj" />
+    <ProjectReference Include="..\Fun.Core\Fun.Core.csproj" />
   </ItemGroup>
 
 </Project>

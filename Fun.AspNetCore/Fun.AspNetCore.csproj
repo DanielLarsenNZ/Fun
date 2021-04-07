@@ -7,9 +7,9 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <ProjectReference Include="..\Scale.Fun\Fun.Core.csproj" />
+    <ProjectReference Include="..\Fun.Core\Fun.Core.csproj" />
   </ItemGroup>
 
 </Project>

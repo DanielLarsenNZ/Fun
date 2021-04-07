@@ -8,6 +8,7 @@ namespace Fun
     public class FunContext
     {
         protected readonly FunController _controller;
+        protected FunHealth _health = FunHealth.Normal();
 
         public FunContext(FunController controller, ILogger logger, IConfiguration configuration, ITelemetry telemetry)
         {
@@ -23,11 +24,20 @@ namespace Fun
             _controller = controller;
         }
 
-        public virtual Task<FunHealth> Health() => Task.FromResult(FunHealth.Normal());
+        public virtual Task<FunHealth> GetHealth() => Task.FromResult(_health);
 
-        public virtual Task ScaleUp(object metadata) => _controller?.ScaleUp();
+        /// <summary>
+        /// Post a health notification to the Context
+        /// </summary>
+        /// <param name="health"></param>
+        /// <remarks>This method must not block or wait for IO. Use a background queue or worker.</remarks>
+        public virtual void PostHealth(FunHealth health) => _health = health;
 
-        public virtual Task ScaleDown(object metadata) => _controller?.ScaleDown();
+        /// <remarks>This method must not block or wait for IO. Use a background queue or worker.</remarks>
+        public virtual void ScaleUp(object metadata) => _controller?.ScaleUp();
+
+        /// <remarks>This method must not block or wait for IO. Use a background queue or worker.</remarks>
+        public virtual void ScaleDown(object metadata) => _controller?.ScaleDown();
 
         public ILogger Logger { get; private set; }
 
