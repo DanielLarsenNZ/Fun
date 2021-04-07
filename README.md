@@ -1,6 +1,6 @@
 # Fun
 
-Like Lambda and Functions, but Fun. 
+Like Lambda and Functions, but Fun<sup>*</sup>.
 
 ## Getting started
 
@@ -25,13 +25,16 @@ public class TabulateEvents : IFun
 }
 ```
 
-`IFun` promotes SOLID principles and Functional programming techniques; single input and output types (can be complex types) give better closure, promote single responsibilty principle and can realise true microservices that contain only a few lines of business logic. 
+`IFun` promotes SOLID principles and Functional programming techniques; single input and output types (can be complex types) give better closure and promote single responsibility principle. Fun services are designed to contain only a few lines of business logic code. 
 
 ## Bindings
 
-Bindings are kept strictly separate; no leaky binding abstractions. Build on a library of generic Bindings or build your own.
+Bindings are kept strictly separate; no leaky binding abstraction. Build on a library of generic bindings or build your own:
 
 ```csharp
+// Saves an Event received from an Event Hub to Cosmos DB. 
+// Event deserialization and Document serialization is implemented in the generic Binding base class.
+// Config and context are injected as dependencies.
 public class SaveEventFun : EventHubCosmosFunBinding<MyEvent, MyDocument>
 {
     public override Task<MyDocument> Run(FunContext context, MyEvent input)
@@ -67,7 +70,7 @@ public class MyBinding : FunBinding
 
 ## Scale controllers
 
-Build your own Scale Controller by inheriting from `FunController`
+Build your own Scale controller by inheriting from `FunController`
 
 ```csharp
 public class KubernetesFunController : FunController
@@ -134,7 +137,7 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 }
 ```
 
-Easy to build on HTTP Fun Bindings
+Easy to build on `HttpFunBinding`:
 
 ```csharp
 public class HelloFun : HttpFunBinding<MyModel, MyModel>
@@ -148,7 +151,7 @@ public class HelloFun : HttpFunBinding<MyModel, MyModel>
 
 ## Rationale
 
-This prototype looks to improve on the things that are not awesome about Lambda and Functions today:
+<sup>*</sup>This prototype looks to improve on some things that are not awesome in Lambda and Functions today:
 
 * Bindings are opaque and out of Users' (Developers') control
 * Scaling is opaque and out of Users' control
@@ -157,5 +160,7 @@ This prototype looks to improve on the things that are not awesome about Lambda 
 * Telemetry is not first class and/or is tied to vendors' services
 * Health is not first class; Functions cannot report on their own health
 * Surpisingly not super easy to run in Containers. Not easily portable
+* IoC is incomplete and inconsistent
+* Authorization is not first-class
 
 Contributions, feedback and issues welcome!
