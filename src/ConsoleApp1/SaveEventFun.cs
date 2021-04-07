@@ -23,6 +23,8 @@ namespace ConsoleApp1
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                //context.Logger.LogError(ex);
+                context.PostHealth(FunHealth.Failure(ex));
                 throw;
             }
         }

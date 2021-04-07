@@ -4,135 +4,158 @@ Like Lambda and Functions, but Fun.
 
 ## Getting started
 
+Implement functional microservices as `IFun`
+
 ```csharp
-// Implement this
 public interface IFun
 {
-    TOutput Run<TInput, TOutput> (FunContext context, TInput input);
+    Task<TOutput> Run(FunContext context, TInput input);
 }
 
-// or this
-public interface IAsyncFun
+// e.g.
+public class TabulateEvents : IFun
 {
-    Task<TOutput> Run<TInput, TOutput> (FunContext context, TInput input);
-}
-
-public class FilterEvents : IFun
-{
-    // Should we force Run to be synchronous?
-    public MyDocument Run (FunContext context, MyEvent input)
+    public Task<MyDocument> Run (FunContext context, MyEvent input)
     {
-        if (input.Type == 1) return new MyDocument(input);
+        context.Logger.LogInformation(input.Description);
+
+        if (input.Type == "Add") return new MyDocument{ Sum = input.Value1 + input Value2 };
+        else return new MyDocument{ Sum = input.Value1 - input Value2 };
     } 
+}
+```
+
+`IFun` promotes SOLID principles and Functional programming techniques; single input and output types (can be complex types) give better closure, promote single responsibilty principle and can realise true microservices that contain only a few lines of business logic. 
+
+## Bindings
+
+Bindings are kept strictly separate; no leaky binding abstractions. Build on a library of generic Bindings or build your own.
+
+```csharp
+public class SaveEventFun : EventHubCosmosFunBinding<MyEvent, MyDocument>
+{
+    public override Task<MyDocument> Run(FunContext context, MyEvent input)
+    {
+        try
+        {
+            return Task.FromResult(
+                new MyDocument { 
+                    Id = Guid.NewGuid().ToString("N"), 
+                    MyProperty = input.MyProperty });
+        }
+        catch (Exception ex)
+        {
+            context.Logger.LogError(ex);
+            context.PostHealth(FunHealth.Failure(ex));
+            throw;
+        }
+    }
+}
+```
+
+Build your own Binding by inheriting from `FunBinding`
+
+```csharp
+public class MyBinding : FunBinding
+{
+    public override async Task Bind() 
+    {
+        //...
+    }
+}
+```
+
+## Scale controllers
+
+Build your own Scale Controller by inheriting from `FunController`
+
+```csharp
+public class KubernetesFunController : FunController
+{
+    public override async Task ScaleUp() 
+    {
+        //...
+    }
+
+    public override async Task ScaleDown()
+    {
+        //...
+    }
+}
+```
+
+Functions or Bindings can request Scale up or down:
+
+```csharp
+catch (OutOfMemoryException ex)
+{
+    FunContext.Logger.LogError(ex);
+    FunContext.ScaleUp(ex);
+    FunContext.PostHealth(FunHealth.Degraded(ex));
 }
 ```
 
 ## FunContext
 
+Health, Scale, Telemetry, Authorization, Logging and Configuration are first class citizens with properties and methods on `FunContext`
+
 ```csharp
-public class FunContext
+public virtual Task Authorize();
+
+public virtual Task<FunHealth> GetHealth();
+
+public virtual void PostHealth(FunHealth health);
+
+public virtual void ScaleUp(object metadata);
+
+public virtual void ScaleDown(object metadata);
+
+public ILogger Logger { get; }
+
+public ITelemetry Telemetry { get; }
+
+public IConfiguration Configuration { get; }
+```
+
+## HTTP Functions
+
+Extension methods for ASP.NET Core
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
 {
-    public FunContext (FunController controller, ILogger logger, Telemetry telemetry);
+    services.AddFun<HelloFun>();
+}
 
-    Task Bind (FunBindingContext context);
-
-    Task UnBind();
-
-    Task<FunHealth> Health ();
-
-    public Task ScaleUp (object metadata) => controller.ScaleUp();
-
-    public Task ScaleDown (object metadata) => controller.ScaleDown();
-
-    public ILogger Logger { get; }
-
-    public Telemetry Telemetry { get; }
-
-    public FunHealth Health { get; } 
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+    app.UseRouting();
+    app.UseFunPost<HelloFun>("/");
 }
 ```
 
-## Bind it yourself
+Easy to build on HTTP Fun Bindings
 
 ```csharp
-public class EventToCosmosFun : IFun
+public class HelloFun : HttpFunBinding<MyModel, MyModel>
 {
-    private readonly EventProcessorClient _processor;
-    private readonly Container _container;
-    private bool _unbinding = false;
-
-    public EventFun (EventProcessorClient processor, Container container)
+    public override Task<MyModel> Run(FunContext context, MyModel input)
     {
-        _processor = processor;
-        _container = container;
+        return Task.FromResult(input);
     }
-
-    public async Task Bind (FunStartupContext context)
-    {
-        // Register handlers for processing events and handling errors
-        _processor.ProcessEventAsync += new (ProcessEventArgs eventArgs)
-        {
-            if (args.CancellationToken.IsCancellationRequested)
-            {
-                return Task.CompletedTask;
-            }
-
-            try
-            {
-                await _container.CreateItemAsync(
-                    Run<MyEvent, MyDocument>(
-                        JsonConvert.DeserializeObject<MyEvent>(
-                            Encoding.UTF8.GetString(eventArgs.Data.Body.ToArray()))));
-                
-                await eventArgs.UpdateCheckpointAsync(eventArgs.CancellationToken);
-                Health.Ok();
-            }
-            catch (OutOfMemoryException ex)
-            {
-                context.Logger.LogError(ex);
-                ScaleUp(ex);
-            }
-            catch (Exception ex)
-            {
-                // TODO: retry logic
-                context.Logger.LogError(ex);
-
-                // Circuit breaker
-                if (attempts > 3) Health.Error(ex);
-                else Health.Warning(ex);
-            }
-        };
-
-        _processor.ProcessErrorAsync += new (ProcessErrorEventArgs eventArgs) 
-        {
-            context.Logger.LogError(eventArgs.Exception);
-            // Circuit breaker
-            if (attempts > 3) Health.Error(ex);
-            else Health.Warning(ex);
-        }
-
-        // Start the processing
-        await _processor.StartProcessingAsync();
-
-        while (!_unbinding) Task.Delay(1);
-    }
-
-    public async Task UnBind ()
-    {
-        _unbinding = true;
-        await _processor.StopProcessingAsync();
-    }
-
-    public async Task<FunHealth> Health() => Health;
 }
 ```
 
-## Scale Controllers
+## Rationale
 
-```csharp
-public class KubernetesFunController : FunController
-{
-    Task ScaleUp(object metadata);
-    Task ScaleDown(object metadata);
-}
-```
+This prototype looks to improve on the things that are not awesome about Lambda and Functions today:
+
+* Bindings are opaque and out of Users' (Developers') control
+* Scaling is opaque and out of Users' control
+* Bindings leak into Function code
+* Triggers are opaque, confusing, and leak into Function code
+* Telemetry is not first class and/or is tied to vendors' services
+* Health is not first class; Functions cannot report on their own health
+* Surpisingly not super easy to run in Containers. Not easily portable
+
+Contributions, feedback and issues welcome!
