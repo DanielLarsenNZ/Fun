@@ -192,6 +192,7 @@ public class HelloFun : HttpFunBinding<MyModel, MyModel>
 * Scaling is opaque and out of Users' control
 * Bindings leak into Function code
 * Triggers are opaque, confusing, and leak into Function code
+* Tigger delegates sometimes swallow exceptions
 * Telemetry is not first class and/or is tied to vendors' services
 * Health is not first class; Functions cannot report on their own health
 * Surpisingly not super easy to run in Containers. Not easily portable

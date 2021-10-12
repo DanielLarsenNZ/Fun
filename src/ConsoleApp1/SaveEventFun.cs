@@ -18,7 +18,10 @@ namespace ConsoleApp1
             try
             {
                 Console.WriteLine("Run");
-                return Task.FromResult(new MyDocument { Id = Guid.NewGuid().ToString("N"), MyProperty = input.MyProperty });
+                return Task.FromResult(
+                    new MyDocument { 
+                        Id = Guid.NewGuid().ToString("N"), 
+                        MyProperty = input.MyProperty });
             }
             catch (Exception ex)
             {
