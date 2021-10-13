@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Fun.AspNetCore
@@ -18,7 +19,7 @@ namespace Fun.AspNetCore
                             case "POST":
                             case "PUT":
                             case "PATCH":
-                                await context.Response.WriteAsJsonAsync(await Run(_context, await context.Request.ReadFromJsonAsync<TInput>()));
+                                await context.Response.WriteAsJsonAsync(await Run(_context, await context.Request.ReadFromJsonAsync<TInput>(), context.RequestAborted));
                                 break;
                             default:
                                 //TODO: Query string binding
@@ -26,7 +27,7 @@ namespace Fun.AspNetCore
                         }
                     }));
 
-        public abstract Task<TOutput> Run(FunContext context, TInput input);
+        public abstract Task<TOutput> Run(FunContext context, TInput input, CancellationToken cancellationToken);
 
         public RequestDelegate RequestDelegate { get; protected set; }
     }

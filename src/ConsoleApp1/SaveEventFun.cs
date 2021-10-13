@@ -3,6 +3,7 @@ using Fun;
 using Fun.Azure;
 using Microsoft.Azure.Cosmos;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConsoleApp1
@@ -13,7 +14,7 @@ namespace ConsoleApp1
         {
         }
 
-        public override Task<MyDocument> Run(FunContext context, MyEvent input)
+        public override Task<MyDocument> Run(FunContext context, MyEvent input, CancellationToken cancellationToken)
         {
             try
             {

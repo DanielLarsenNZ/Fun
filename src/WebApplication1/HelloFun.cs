@@ -1,5 +1,6 @@
 ﻿using Fun;
 using Fun.AspNetCore;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebApplication1
@@ -8,7 +9,7 @@ namespace WebApplication1
     {
         public HelloFun(FunContext context) : base(context) { }
 
-        public override Task<MyModel> Run(FunContext context, MyModel input)
+        public override Task<MyModel> Run(FunContext context, MyModel input, CancellationToken cancellationToken)
         {
             return Task.FromResult(input);
         }

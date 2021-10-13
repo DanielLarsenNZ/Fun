@@ -3,12 +3,13 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CosmosChangeFeedTrigger
 {
-    public class CosmosChangeFeedFunBinding : FunBinding, IFun<ToDoItem, ToDoMessage>
+    public class CosmosChangeFeedFunBinding : FunBinding, IFun<IReadOnlyCollection<ToDoItem>, IEnumerable<ToDoMessage>>
     {
         private readonly CosmosClient _cosmos;
         private readonly IConfiguration _config;
@@ -31,7 +32,10 @@ namespace CosmosChangeFeedTrigger
             await ChangeFeedProcessor.StopAsync();
         }
 
-        public async Task<ToDoMessage> Run(FunContext context, ToDoItem input) => new ToDoMessage();
+        public async Task<IEnumerable<ToDoMessage>> Run(FunContext context, IReadOnlyCollection<ToDoItem> input, CancellationToken cancellationToken)
+        {
+            return input.Select(i => new ToDoMessage { id = i.id, creationTime = i.creationTime });
+        }
 
         /// <summary>
         /// Start the Change Feed Processor to listen for changes and process them with the HandleChangesAsync implementation.
@@ -61,18 +65,10 @@ namespace CosmosChangeFeedTrigger
         /// The delegate receives batches of changes as they are generated in the change feed and can process them.
         /// </summary>
         private static async Task HandleChangesAsync(
-            //IChangeFeedObserverContext context,
             IReadOnlyCollection<ToDoItem> changes,
             CancellationToken cancellationToken)
         {
-            foreach (ToDoItem item in changes)
-            {
-                Console.WriteLine($"Detected operation for item with id {item.id}, created at {item.creationTime}.");
-                // Simulate some asynchronous operation
-                await Task.Delay(10);
-            }
 
-            Console.WriteLine("Finished handling changes.");
         }
     }
 }

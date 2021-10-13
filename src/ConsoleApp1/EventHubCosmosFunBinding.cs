@@ -3,6 +3,7 @@ using Microsoft.Azure.Cosmos;
 using System;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 //TODO: Move to Fun.Azure
@@ -32,7 +33,7 @@ namespace Fun.Azure
                     await _container.CreateItemAsync(
                         await Run(
                             _context,
-                            JsonSerializer.Deserialize<TInput>(Encoding.UTF8.GetString(args.Data.Body.ToArray()))));
+                            JsonSerializer.Deserialize<TInput>(Encoding.UTF8.GetString(args.Data.Body.ToArray())), args.CancellationToken));
 
                     await args.UpdateCheckpointAsync(args.CancellationToken);
 
@@ -81,6 +82,6 @@ namespace Fun.Azure
             await EventProcessorClient.StopProcessingAsync();
         }
 
-        public abstract Task<TOutput> Run(FunContext context, TInput input);
+        public abstract Task<TOutput> Run(FunContext context, TInput input, CancellationToken cancellationToken);
     }
 }
