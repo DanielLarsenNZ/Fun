@@ -32,10 +32,11 @@ namespace CosmosChangeFeedTrigger
             await ChangeFeedProcessor.StopAsync();
         }
 
-        public async Task<IEnumerable<ToDoMessage>> Run(FunContext context, IReadOnlyCollection<ToDoItem> input, CancellationToken cancellationToken)
-        {
-            return input.Select(i => new ToDoMessage { id = i.id, creationTime = i.creationTime });
-        }
+        public async Task<IEnumerable<ToDoMessage>> Run(
+            FunContext context, 
+            IReadOnlyCollection<ToDoItem> input, 
+            CancellationToken cancellationToken) 
+            => input.Select(i => new ToDoMessage { id = i.id, creationTime = i.creationTime });
 
         /// <summary>
         /// Start the Change Feed Processor to listen for changes and process them with the HandleChangesAsync implementation.

@@ -2,6 +2,34 @@
 
 Like Lambda and Functions, but Fun<sup>*</sup>.
 
+```csharp
+public interface IFun<TInput, TOutput> : IFun
+{
+    Task<TOutput> Run(FunContext context, TInput input, CancellationToken cancellationToken);
+}
+```
+
+```csharp
+public interface IFunBinding
+{
+    Task Bind();
+    Task UnBind();
+}
+```
+
+```csharp
+var fun = new CosmosChangeFeedFunBinding(context, cosmos, config);
+await fun.Bind();
+```
+
+```csharp
+public async Task<IEnumerable<ToDoMessage>> Run(
+    FunContext context, 
+    IReadOnlyCollection<ToDoItem> input, 
+    CancellationToken cancellationToken) 
+    => input.Select(i => new ToDoMessage { id = i.id, creationTime = i.creationTime });
+```
+
 ## Getting started
 
 Implement a micro-service in a functional style as `IFun`
@@ -9,7 +37,7 @@ Implement a micro-service in a functional style as `IFun`
 ```csharp
 public class TabulateEvents : IFun
 {
-    public Task<MyDocument> Run (FunContext context, MyEvent input)
+    public Task<MyDocument> Run (FunContext context, MyEvent input, CancellationToken cancellationToken)
     {
         context.Logger.LogInformation(input.Description);
 
@@ -46,13 +74,13 @@ Build as a console exe and run anywhere that .NET Core is supported.
 ```csharp
 public interface IFun
 {
-    Task<TOutput> Run(FunContext context, TInput input);
+    Task<TOutput> Run(FunContext context, TInput input, CancellationToken cancellationToken);
 }
 
 // e.g.
 public class TabulateEvents : IFun
 {
-    public Task<MyDocument> Run (FunContext context, MyEvent input)
+    public Task<MyDocument> Run (FunContext context, MyEvent input, CancellationToken cancellationToken)
     {
         context.Logger.LogInformation(input.Description);
 
@@ -72,7 +100,7 @@ Bindings are kept strictly separate; no leaky binding abstraction. Build on a li
 // Config and context are injected as dependencies.
 public class SaveEventFun : EventHubCosmosFunBinding<MyEvent, MyDocument>
 {
-    public override Task<MyDocument> Run(FunContext context, MyEvent input)
+    public override Task<MyDocument> Run(FunContext context, MyEvent input, CancellationToken cancellationToken)
     {
         try
         {
@@ -183,6 +211,10 @@ public class HelloFun : HttpFunBinding<MyModel, MyModel>
     }
 }
 ```
+
+## Samples
+
+See samples in `/src` folder.
 
 ## Rationale
 
